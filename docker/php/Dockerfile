@@ -5,9 +5,10 @@ RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 COPY ./docker/php/conf.d /usr/local/etc/php/conf.d
 
 ### PHP extensions ###
-RUN apt-get update && apt-get install -y libpq-dev \
+RUN apt-get update && apt-get install -y libpq-dev libzip-dev\
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo_pgsql
+    && docker-php-ext-install pdo_pgsql \
+    && docker-php-ext-install zip
 ### PHP extensions ###
 
 ### host.docker.internal ###
