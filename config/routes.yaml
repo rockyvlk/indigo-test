@@ -1,0 +1,8 @@
+web:
+    resource: ../src/Http/Web
+    type: attribute
+
+api:
+    resource: ../src/Http/Api
+    type: attribute
+    prefix: /api

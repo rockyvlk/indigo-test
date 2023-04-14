@@ -1,0 +1,26 @@
+security:
+    providers:
+        user_provider:
+            id: App\Http\Security\UserProvider
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        auth:
+            pattern:  ^/(login|register)
+            security: false
+
+        telegram:
+            pattern:  ^/api/telegram
+            security: false
+
+        main:
+            pattern: ^/
+            custom_authenticators:
+                - App\Http\Security\Authenticator
+
+    access_control:
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+

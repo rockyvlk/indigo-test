@@ -1,0 +1,37 @@
+version: "3.8"
+services:
+    indigo-auth-nginx:
+        build:
+            context: ./
+            dockerfile: docker/nginx/Dockerfile
+        restart: always
+        ports:
+            - '${NGINX_PORT:-81}:80'
+        volumes:
+            - ./:/app
+        depends_on:
+            - indigo-auth-php
+
+    indigo-auth-php:
+        build:
+            context: ./
+            dockerfile: docker/php/Dockerfile
+        restart: always
+        volumes:
+            - ./:/app
+        depends_on:
+            - indigo-auth-postgres
+
+    indigo-auth-postgres:
+        image: postgres:15.2-alpine
+        volumes:
+            - indigo-auth-data:/var/lib/postgresql/data
+        environment:
+            POSTGRES_DB: '${POSTGRES_DB:-app}'
+            POSTGRES_PASSWORD: '${POSTGRES_PASSWORD:-1234}'
+            POSTGRES_USER: '${POSTGRES_USER:-app}'
+        ports:
+            - '${POSTGRES_PORT:-5432}:5432'
+
+volumes:
+    indigo-auth-data:

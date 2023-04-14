@@ -1,0 +1,13 @@
+framework:
+    messenger:
+        serializer:
+            default_serializer: messenger.transport.symfony_serializer
+            symfony_serializer:
+                format: json
+
+        transports:
+            sync: 'sync://'
+
+        default_bus: command.bus
+        buses:
+            command.bus: ~

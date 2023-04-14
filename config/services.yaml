@@ -1,0 +1,33 @@
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    App\Http\Web\:
+        resource: '%kernel.project_dir%/src/Http/Web'
+        tags: [ 'controller.service_arguments' ]
+
+    App\Http\Api\:
+        resource: '%kernel.project_dir%/src/Http/Api'
+        tags: [ 'controller.service_arguments' ]
+
+    App\Http\Request\RequestResolver: ~
+
+    App\Http\Security\UserProvider: ~
+    App\Http\Security\Authenticator: ~
+
+    App\Http\Exception\ExceptionListener:
+        arguments:
+            - '%kernel.environment%'
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+
+    App\Shared\Database\DatabaseSchema: ~
+
+    App\Shared\Command\CommandBus: ~
+    App\Shared\Command\CommandBusInterface: '@App\Shared\Command\CommandBus'
+
+
+
+

@@ -1,0 +1,64 @@
+parameters:
+    auth.bot.name: '%env(resolve:AUTH_BOT_NAME)%'
+    auth.bot.token: '%env(resolve:AUTH_BOT_TOKEN)%'
+
+services:
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        public: false
+
+    App\Auth\Console\:
+        resource: '%kernel.project_dir%/src/Auth/Console'
+        tags: ['console.command']
+
+    App\Auth\Services\TelegramBot\MessageSender:
+        arguments:
+            $token: '%auth.bot.token%'
+
+    App\Auth\Services\TelegramBot\MessageSenderInterface: '@App\Auth\Services\TelegramBot\MessageSender'
+
+    App\Auth\Services\TelegramBot\BotUrlGenerator:
+        arguments:
+            $botName: '%auth.bot.name%'
+
+    App\Auth\Services\TelegramBot\BotUrlGeneratorInterface: '@App\Auth\Services\TelegramBot\BotUrlGenerator'
+
+    App\Auth\Services\Link\HashGenerator: ~
+    App\Auth\Services\Link\HashGeneratorInterface: '@App\Auth\Services\Link\HashGenerator'
+
+    App\Auth\Services\Link\HashChecker: ~
+    App\Auth\Services\Link\HashCheckerInterface: '@App\Auth\Services\Link\HashChecker'
+
+    App\Auth\Services\Link\LinkGenerator: ~
+    App\Auth\Services\Link\LinkGeneratorInterface: '@App\Auth\Services\Link\LinkGenerator'
+
+    App\Auth\Services\Link\LinkCleaner: ~
+    App\Auth\Services\Link\LinkCleanerInterface: '@App\Auth\Services\Link\LinkCleaner'
+
+    App\Auth\Read\AuthUser\AuthUserFetcher: ~
+    App\Auth\Read\AuthUser\AuthUserFetcherInterface: '@App\Auth\Read\AuthUser\AuthUserFetcher'
+
+    App\Auth\Read\Link\LinkFetcher: ~
+    App\Auth\Read\Link\LinkFetcherInterface: '@App\Auth\Read\Link\LinkFetcher'
+
+    App\Auth\UseCases\:
+        resource: '%kernel.project_dir%/src/Auth/UseCases/**/*Handler.php'
+        tags: [{ name: messenger.message_handler, bus: command.bus }]
+
+    App\Auth\Domain\Link\LinkRepository: ~
+    App\Auth\Domain\Link\LinkRepositoryInterface: '@App\Auth\Domain\Link\LinkRepository'
+
+    App\Auth\Domain\User\UserRepository: ~
+    App\Auth\Domain\User\UserRepositoryInterface: '@App\Auth\Domain\User\UserRepository'
+
+    App\Auth\Validation\:
+        resource: '%kernel.project_dir%/src/Auth/Validation/*'
+        tags: [ { name: validator.constraint_validator } ]
+
+    App\Auth\Events\:
+        resource: '%kernel.project_dir%/src/Auth/Events/*'
+
+    App\Auth\Subscribers\:
+        resource: '%kernel.project_dir%/src/Auth/Subscribers/*'
+        tags: [ { name: kernel.event_subscriber } ]
